@@ -9,8 +9,8 @@ WORKDIR /app
 RUN chown -R www-data:www-data .
 
 # Устанавливаем зависимости для Angular-приложения
-WORKDIR /app/frontend
 RUN npm install
+
 # Экспортируем порт 9000 для Angular-приложения
 EXPOSE 4200
 
