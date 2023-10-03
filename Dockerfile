@@ -11,8 +11,10 @@ RUN chown -R www-data:www-data .
 # Устанавливаем зависимости для Angular-приложения
 RUN npm install
 
-# Экспортируем порт 9000 для Angular-приложения
+COPY src /app/web
+
+# Экспортируем порт 4200 для Angular-приложения
 EXPOSE 4200
 
 # Запускаем Angular-приложение
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+CMD ["npm", "start"]
