@@ -1,0 +1,24 @@
+<div *ngIf="!isEditing">
+    <h2>{{ author?.name }}</h2>
+    <p>Дата рождения: {{ author?.birthDate }}</p>
+    <!-- Другие поля автора -->
+  
+    <button (click)="startEditing()">Редактировать</button>
+  </div>
+  
+  <div *ngIf="isEditing">
+    <form [formGroup]="authorForm">
+      <div>
+        <label for="name">Имя:</label>
+        <input type="text" id="name" formControlName="name" required>
+      </div>
+      <div>
+        <label for="birthDate">Дата рождения:</label>
+        <input type="date" id="birthDate" formControlName="birthDate" required>
+      </div>
+      <!-- Другие поля автора -->
+  
+      <button (click)="saveAuthor()">Сохранить</button>
+      <button (click)="cancelEdit()">Отмена</button>
+    </form>
+  </div>

@@ -1,0 +1,17 @@
+# Игнорировать каталог .git
+.git
+
+# Игнорировать файл .gitignore
+.gitignore
+
+# Игнорировать файл .dockerignore
+.dockerignore
+
+# Игнорировать каталог node_modules
+node_modules
+
+# Игнорировать все файлы .log
+*.log
+
+# Игнорировать файл package-lock.json
+package-lock.json
