@@ -24,32 +24,54 @@ export class BookService {
   }
 
   // Поиск книги по названию и описанию
-  searchBooks(searchQuery: string): Observable<any[]> {
+  searchBooks(searchQuery: string, searchAuthors: string[], searchLanguages: string[], searchGenre: string[], searchMinPage: number, searchMaxPage: number): Observable<any[]> {
     let params = new HttpParams();
     params = params.set('searchQuery', searchQuery);
+    if (searchAuthors.length > 0) {
+        params = params.set('searchAuthors', JSON.stringify(searchAuthors));
+    }
+    if (searchLanguages.length > 0) {
+        params = params.set('searchLanguages', JSON.stringify(searchLanguages));
+    }
+    if (searchGenre.length > 0) {
+        params = params.set('searchGenre', JSON.stringify(searchGenre));
+    }
+    if (searchMinPage !== undefined && searchMinPage !== null) {
+        params = params.set('searchMinPage', searchMinPage.toString());
+    }
+    if (searchMaxPage !== undefined && searchMaxPage !== null) {
+        params = params.set('searchMaxPage', searchMaxPage.toString());
+    }
     return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
   }
+  
   onAuthorMultiSelectChange(authors: { value: any[] }) {
-    const authorsString = authors.value.join(',');
+    const authorsArray = JSON.stringify(authors.value);
     let params = new HttpParams();
-    params = params.set('searchAuthors', authorsString);
+    params = params.set('searchAuthors', authorsArray);
     return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
-  }  
+  }
   onLanguageMultiSelectChange(languages: { value: any[] }) {
-    const languagesString = languages.value.join(',');
+    const languagesString = JSON.stringify(languages.value);
     let params = new HttpParams();
     params = params.set('searchLanguages', languagesString);
     return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
   }
   onPagesFilterChange(minPage: number, maxPage: number): Observable<any[]> {
     let params = new HttpParams();
-    params = params.set('minPage', minPage.toString());
-    params = params.set('maxPage', maxPage.toString());
+    if (minPage !== undefined && minPage !== null) {
+        params = params.set('searchMinPage', minPage.toString());
+    }
+    
+    if (maxPage !== undefined && maxPage !== null) {
+        params = params.set('searchMaxPage', maxPage.toString());
+    }
     return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
   }
-  onGenreFilterChange(genre: string): Observable<any[]> {
+  onGenreFilterChange(genre: { value: any[] }): Observable<any[]> {
+    const genresString = JSON.stringify(genre.value);
     let params = new HttpParams();
-    params = params.set('genre', genre);
+    params = params.set('searchGenre', genresString);
     return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
   }
 

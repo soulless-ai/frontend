@@ -23,6 +23,13 @@ button {
     display: flex;
     width: 90%;
     justify-content: space-between;
+    position: relative;
+}
+.table-controllers label {
+    position: absolute;
+    top: -28px;
+    margin-left: 12px;
+    font-size: 18px;
 }
 .table-controllers button {
     font-size: 16px;
@@ -156,6 +163,11 @@ tbody tr .book-details td div {
 .searchContainer input:focus, .searchContainer input:active, .searchContainer input:hover {
     width: 90% !important;
 }
+.applyFilterButton {
+    font-size: 16px;
+    padding: 12px 16px;
+    width: 55%;
+}
 
 :host /deep/ p-dropdown {
     width: 100%;
@@ -259,4 +271,29 @@ tbody tr .book-details td div {
 }
 :host /deep/ .p-hidden-accessible {
     opacity: 0;
+}
+.searchGenreSection {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.searchGenreClearButton {
+    position: absolute;
+    right: 0;
+    margin: 0px;
+    height: 70%;
+    border: none;
+    width: 20%;
+    box-shadow: none;
+}
+:host /deep/ .p-dropdown-label {
+    width: 79%;
+}
+.searchGenreClearButton:hover {
+    background-color: black;
+    color: white;
+}
+.searchGenreClearButton:active {
+    background-color: brown;
 }

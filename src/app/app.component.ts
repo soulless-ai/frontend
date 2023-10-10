@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
   }
 
   searchBooks(searchQuery: string): void {
-    this.bookService.searchBooks(searchQuery).subscribe((data: any[]) => {
+    this.bookService.searchBooks(searchQuery, this.selectedAuthors, this.selectedLanguages, this.bookGenreSelects, this.minPages, this.maxPages).subscribe((data: any[]) => {
       this.books = data;
     });
   }
@@ -79,17 +79,26 @@ export class AppComponent implements OnInit {
       this.books = data;
     });
   }
+  applyFilter() {
+    this.onPagesFilterChange();
+  }
   onPagesFilterChange(): void {
+    console.log(this.minPages + " + " + this.maxPages);
     this.bookService.onPagesFilterChange(this.minPages, this.maxPages).subscribe((data: any[]) => {
       this.books = data;
     });
   }
-  onGenreFilterChange(genre: string) {
+  onGenreFilterChange(genre: { value: any[] }) {
     this.bookService.onGenreFilterChange(genre).subscribe((data: any[]) => {
       this.books = data;
     });
   }
 
+  clearGenreFilter() {
+    this.bookGenre = [];
+    this.getBooks();
+  }
+  
   toggleDetails(index: number) {
     this.expandedBook = this.expandedBook === this.books[index] ? null : this.books[index];
   }

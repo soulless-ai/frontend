@@ -8,7 +8,9 @@
   <div class="filters">
 
     <div class="table-controllers">
+      <label for="searchQuery">Поиск по названию и описанию</label>
       <input type="text" [(ngModel)]="searchQuery" placeholder="Введите текст и ждите результата" 
+          name="searchQuery"
           (input)="searchBooks($event.target.value)"
           [style.width]="searchQuery ? '75%' : '30%'">
       <button (click)="openAddBookDialog()">Добавить книгу</button>
@@ -18,12 +20,20 @@
 
       <div class="searchContainer">
         <p-multiSelect [options]="bookAuthorSelects" [(ngModel)]="bookAuthor" 
+            placeholder="Выберите автора" [emptyMessage]="'Нет данных для отображения'"
             [showToggleAll]="false" optionLabel="value" (onChange)="onAuthorMultiSelectChange($event)"></p-multiSelect>
         <p-multiSelect [options]="bookLanguageSelects" [(ngModel)]="bookLanguage" 
+            placeholder="Выберите язык" [emptyMessage]="'Нет данных для отображения'"
             [showToggleAll]="false" optionLabel="value" (onChange)="onLanguageMultiSelectChange($event)"></p-multiSelect>
-        <input type="number" [(ngModel)]="minPages" placeholder="Минимум страниц" (input)="onPagesFilterChange()">
-        <input type="number" [(ngModel)]="maxPages" placeholder="Максимум страниц" (input)="onPagesFilterChange()">
-        <p-dropdown [options]="bookGenreSelects" [(ngModel)]="bookGenre" optionLabel="value" placeholder="Select a City" [editable]="false" ></p-dropdown>
+        <input type="number" [(ngModel)]="minPages" placeholder="Минимум страниц">
+        <input type="number" [(ngModel)]="maxPages" placeholder="Максимум страниц">
+        <button class="applyFilterButton" (click)="applyFilter()">Поиск по количеству страниц</button>
+        <div class="searchGenreSection">
+          <p-dropdown [options]="bookGenreSelects" [(ngModel)]="bookGenre" optionLabel="value" 
+              placeholder="Выберите жанр" [emptyMessage]="'Нет данных для отображения'" 
+              [editable]="false" (onChange)="onGenreFilterChange($event)"></p-dropdown>
+          <button class="searchGenreClearButton" (click)="clearGenreFilter()">X</button>
+        </div>
       </div>
 
       <table>
