@@ -1,0 +1,134 @@
+
+.book-add-dialog-main {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.book-add-dialog-container {
+    background-color: black;
+    border: solid 1px white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.top-bar button:hover {
+    background-color: brown;
+    color: white;
+}
+.form {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 95%;
+}
+.form mat-form-field {
+    width: 100%;
+    margin: 12px 0px;
+}
+.form label {
+    font-size: 18px;
+    padding: 0px 4px;
+    box-sizing: border-box;
+}
+.form input, .form textarea, .form mat-select {
+    font-size: 16px;
+    padding: 8px 4px;
+    box-sizing: border-box;
+    background-color: white;
+    color: black;
+    border-radius: 4px;
+    margin: 4px 0px;
+}
+.form textarea {
+    height: 90px;
+}
+.form button {
+    width: 100%;
+    font-size: 16px;
+    margin: 30px 0px;
+    border-radius: 4px;
+    transition: all 0.5s;
+    border: solid 1px rgb(0, 0, 0);
+}
+.form button:hover {
+    background-color: black;
+    color: white;
+    border: solid 1px white;
+}
+
+::ng-deep .cdk-overlay-container {
+    position: absolute;
+}
+::ng-deep .cdk-overlay-pane { 
+    position: absolute;
+    z-index: 9999999999;
+    margin-top: 30px;
+}
+::ng-deep .mat-select-panel {
+    position: absolute;
+    background: rgb(65, 65, 65);
+    border: solid 0.1px rgb(255, 255, 255);
+}
+::ng-deep .mat-option span {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+::ng-deep .mat-select-panel div {
+    font: inherit;
+    background: transparent;
+    color: currentColor;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    vertical-align: bottom;
+    text-align: inherit;
+    border: solid 0.1px rgb(0, 0, 0);
+    font-size: inherit;
+    line-height: 3em;
+    height: 3em;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+::ng-deep .mat-option button {
+    width: 20px;
+    height: 20px;
+    background-color: brown;
+    border: none;
+}
+::ng-deep .mat-option button:active {
+    border: none
+}
+::ng-deep  .mat-select-panel div input {
+    padding: 0 16px;
+}
+::ng-deep  .mat-select-panel div button {
+    height: 100%;
+    margin: 0;
+    border: none;
+    width: 30%;
+}

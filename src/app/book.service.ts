@@ -2,41 +2,56 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-@Injectable({
+@Injectable ({
   providedIn: 'root'
 })
 export class BookService {
-  private baseUrl: string = 'http://your-backend-url/api/books'; // Замените на ваш URL
+  private baseUrl: string = 'http://localhost:80/api/books';
 
   constructor(private http: HttpClient) {}
 
-  // Получение списка книг с фильтрацией
-  getBooks(
-    searchQuery: string,
-    authors: string[],
-    languages: string[],
-    pages: string[],
-    genre: string
-  ): Observable<any[]> {
-    // Создаем параметры запроса
+  getBooks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}`);
+  }
+  getAuthors(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/get-authors`);
+  }
+  getLanguages(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/get-languages`);
+  }
+  getGenres(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/get-genres`);
+  }
+
+  // Поиск книги по названию и описанию
+  searchBooks(searchQuery: string): Observable<any[]> {
     let params = new HttpParams();
     params = params.set('searchQuery', searchQuery);
-    if (authors && authors.length > 0) {
-      params = params.set('authors', authors.join(','));
-    }
-    if (languages && languages.length > 0) {
-      params = params.set('languages', languages.join(','));
-    }
-    if (pages && pages.length > 0) {
-      params = params.set('pages', pages.join(','));
-    }
-    if (genre) {
-      params = params.set('genre', genre);
-    }
-  
-    // Выполняем GET-запрос к серверу
-    return this.http.get<any[]>(`${this.baseUrl}`, { params });
+    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
+  }
+  onAuthorMultiSelectChange(authors: { value: any[] }) {
+    const authorsString = authors.value.join(',');
+    let params = new HttpParams();
+    params = params.set('searchAuthors', authorsString);
+    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
   }  
+  onLanguageMultiSelectChange(languages: { value: any[] }) {
+    const languagesString = languages.value.join(',');
+    let params = new HttpParams();
+    params = params.set('searchLanguages', languagesString);
+    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
+  }
+  onPagesFilterChange(minPage: number, maxPage: number): Observable<any[]> {
+    let params = new HttpParams();
+    params = params.set('minPage', minPage.toString());
+    params = params.set('maxPage', maxPage.toString());
+    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
+  }
+  onGenreFilterChange(genre: string): Observable<any[]> {
+    let params = new HttpParams();
+    params = params.set('genre', genre);
+    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
+  }
 
   // Создание новой книги
   createBook(bookData: any): Observable<any> {

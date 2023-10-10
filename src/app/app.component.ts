@@ -1,61 +1,112 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BookService } from './book.service';
-import { AuthorService } from './author.service';
-import { GenreService } from './genre.service';
-import { Router } from '@angular/router';
+import { BookAddDialogComponent } from './book-add/book-add-dialog.component';
+
+interface bookAuthorSelect {
+  value: string;
+}
+interface bookLanguageSelect {
+  value: string;
+}
+interface bookGenreSelect {
+  value: string;
+}
+
 @Component({
   selector: 'app-root',
+  styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
   books: any[] = [];
-  authors: any[] = [];
-  genres: any[] = [];
   selectedAuthors: any[] = [];
   selectedLanguages: string[] = [];
   selectedPages: string[] = [];
-  selectedGenre: string = '';
+  selectedGenres: string = '';
   searchQuery: string = '';
+  expandedBook: any | null = null;
+  isEditMode: boolean = false;
+
+  bookAuthor: string[] = [];
+  bookAuthorSelects!: bookAuthorSelect[];
+
+  bookLanguage: string[] = [];
+  bookLanguageSelects!: bookLanguageSelect[];
+
+  minPages: number;
+  maxPages: number;
+
+  bookGenre: string[] = [];
+  bookGenreSelects!: bookGenreSelect[];
 
   constructor(
     private bookService: BookService,
-    private authorService: AuthorService,
-    private genreService: GenreService,
-    private router: Router
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
     this.getBooks();
-    this.getAuthors();
-    this.getGenres();
+    this.bookService.getAuthors().subscribe((authors: string[]) => {
+      this.bookAuthorSelects = authors.map((author) => ({ value: author }));
+    });
+    this.bookService.getLanguages().subscribe((languages: string[]) => {
+      this.bookLanguageSelects = languages.map((language) => ({ value: language }));
+    });
+    this.bookService.getGenres().subscribe((genres: string[]) => {
+      this.bookGenreSelects = genres.map((genre) => ({ value: genre }));
+    });
   }
 
   getBooks() {
-    this.bookService.getBooks(
-      this.searchQuery,
-      this.selectedAuthors,
-      this.selectedLanguages,
-      this.selectedPages,
-      this.selectedGenre
-    ).subscribe((data: any[]) => {
+    this.bookService.getBooks().subscribe((data: any[]) => {
+      this.books = data.map(book => ({ ...book, isExpanded: false }));
+    });
+  }
+
+  searchBooks(searchQuery: string): void {
+    this.bookService.searchBooks(searchQuery).subscribe((data: any[]) => {
+      this.books = data;
+    });
+  }
+  onAuthorMultiSelectChange(authors: { value: any[] }) {
+    this.bookService.onAuthorMultiSelectChange(authors).subscribe((data: any[]) => {
+      this.books = data;
+    });
+  }
+  onLanguageMultiSelectChange(languages: { value: any[] }) {
+    this.bookService.onLanguageMultiSelectChange(languages).subscribe((data: any[]) => {
+      this.books = data;
+    });
+  }
+  onPagesFilterChange(): void {
+    this.bookService.onPagesFilterChange(this.minPages, this.maxPages).subscribe((data: any[]) => {
+      this.books = data;
+    });
+  }
+  onGenreFilterChange(genre: string) {
+    this.bookService.onGenreFilterChange(genre).subscribe((data: any[]) => {
       this.books = data;
     });
   }
 
-  getAuthors() {
-    this.authorService.getAuthors().subscribe((data: any[]) => {
-      this.authors = data;
+  toggleDetails(index: number) {
+    this.expandedBook = this.expandedBook === this.books[index] ? null : this.books[index];
+  }
+
+  openAddBookDialog(): void {
+    const dialogRef = this.dialog.open(BookAddDialogComponent, {});
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.updateBooksList();
     });
   }
 
-  getGenres() {
-    this.genreService.getGenres().subscribe((data: any[]) => {
-      this.genres = data;
-    });
+  updateBooksList() {
+    this.getBooks();
   }
 
-  openBookDetail(book: any) {
-    this.router.navigate(['books/:id', book.id]);
+  sortTableByAuthorName() {
+    this.books.sort((a, b) => a.author_id.localeCompare(b.author_id));
   }
 }

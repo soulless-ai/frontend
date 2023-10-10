@@ -8,22 +8,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, Routes } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown';
 
 import { AppComponent } from './app.component';
-import { BookListComponent } from './book-list/book-list.component';
-import { BookDetailComponent } from './book-detail/book-detail.component';
-import { AuthorListComponent } from './author-list/author-list.component';
-import { AuthorDetailComponent } from './author-detail/author-detail.component';
-import { GenreListComponent } from './genre-list/genre-list.component';
+import { BookAddDialogComponent } from './book-add/book-add-dialog.component';
 
 export class AppRoutingModule { }
 // Определение маршрутов
 const appRoutes: Routes = [
-  { path: 'books', component: BookListComponent },
-  { path: 'books/:id', component: BookDetailComponent },
-  { path: 'authors', component: AuthorListComponent },
-  { path: 'authors/:id', component: AuthorDetailComponent },
-  { path: 'genres', component: GenreListComponent },
+  { path: 'books', component: AppComponent },
   { path: '', redirectTo: '/books', pathMatch: 'full' },
   { path: '**', redirectTo: '/books', pathMatch: 'full' }
 ];
@@ -31,14 +28,16 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    BookListComponent,
-    BookDetailComponent,
-    AuthorListComponent,
-    AuthorDetailComponent,
-    GenreListComponent
+    BookAddDialogComponent,
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
@@ -47,6 +46,10 @@ const appRoutes: Routes = [
     MatSelectModule,
     MatAutocompleteModule,
     MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MultiSelectModule,
+    DropdownModule,
     RouterModule.forRoot(appRoutes)
   ],
   providers: [],

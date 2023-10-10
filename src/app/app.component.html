@@ -1,55 +1,94 @@
-<div class="book-list">
-  <h2>Список книг</h2>
-
-  <!-- Фильтры -->
-  <div class="filters">
-    <!-- Поле поиска -->
-    <input type="text" [(ngModel)]="searchQuery" placeholder="Поиск">
-
-    <!-- Фильтр по авторам (мультиселект) -->
-    <mat-form-field appearance="fill">  
-      <mat-label>Автор</mat-label>
-      <mat-select multiple [(ngModel)]="selectedAuthors">
-        <mat-option *ngFor="let author of authors" [value]="author.id">{{ author.name }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Фильтр по языкам (мультиселект) -->
-    <mat-form-field appearance="fill">
-      <mat-label>Язык</mat-label>
-      <mat-select multiple [(ngModel)]="selectedLanguages">
-        <mat-option *ngFor="let book of books" [value]="book.language">{{ book.language }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    
-    <!-- Фильтр по жанру (селект) -->
-    <mat-form-field appearance="fill">
-      <mat-label>Жанр</mat-label>
-      <mat-select [(ngModel)]="selectedGenre">
-        <mat-option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Число страниц</mat-label>
-      <mat-select multiple [(ngModel)]="selectedPages">
-        <mat-option *ngFor="let book of books" [value]="book.pageCount">{{ book.pageCount }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
+<header>
+  <div class="header-title">
+    <h2>Список книг</h2>
   </div>
+</header>
 
-  <ul>
-    <li *ngFor="let book of books">
-      <!-- Вывод информации о книге -->
-      <h3>{{ book.title }}</h3>
-      <p>Автор: {{ book.author }}</p>
-      <p>Язык: {{ book.language }}</p>
-      <p>Жанр: {{ book.genre }}</p>
-      <p>Число страниц: {{ book.page }}</p>
+<div class="book-list">
+  <div class="filters">
 
-      <!-- Добавьте кнопку или ссылку для открытия карточки книги -->
-      <button (click)="openBookDetail(book)">Подробнее</button>
-    </li>
-  </ul>
+    <div class="table-controllers">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Введите текст и ждите результата" 
+          (input)="searchBooks($event.target.value)"
+          [style.width]="searchQuery ? '75%' : '30%'">
+      <button (click)="openAddBookDialog()">Добавить книгу</button>
+    </div>   
+
+    <div class="table-main">
+
+      <div class="searchContainer">
+        <p-multiSelect [options]="bookAuthorSelects" [(ngModel)]="bookAuthor" 
+            [showToggleAll]="false" optionLabel="value" (onChange)="onAuthorMultiSelectChange($event)"></p-multiSelect>
+        <p-multiSelect [options]="bookLanguageSelects" [(ngModel)]="bookLanguage" 
+            [showToggleAll]="false" optionLabel="value" (onChange)="onLanguageMultiSelectChange($event)"></p-multiSelect>
+        <input type="number" [(ngModel)]="minPages" placeholder="Минимум страниц" (input)="onPagesFilterChange()">
+        <input type="number" [(ngModel)]="maxPages" placeholder="Максимум страниц" (input)="onPagesFilterChange()">
+        <p-dropdown [options]="bookGenreSelects" [(ngModel)]="bookGenre" optionLabel="value" placeholder="Select a City" [editable]="false" ></p-dropdown>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="border-left: none"> 
+              <mat-label>Название</mat-label>
+            </th>
+            <th>
+              <mat-form-field appearance="fill">  
+                <mat-label>Автор</mat-label>
+                <mat-select multiple [(ngModel)]="selectedAuthors" (change)="sortTableByAuthorName()">
+                  <mat-option *ngFor="let book of books" [value]="book.author_id"></mat-option>
+                </mat-select>
+              </mat-form-field>
+            </th>
+            <th>
+              <mat-form-field appearance="fill">
+                <mat-label>Язык</mat-label>
+                <mat-select multiple [(ngModel)]="selectedLanguages">
+                  <mat-option *ngFor="let book of books" [value]="book.language"></mat-option>
+                </mat-select>
+              </mat-form-field>
+            </th>
+            <th>
+              <mat-form-field appearance="fill">
+                <mat-label>Жанр</mat-label>
+                <mat-select multiple [(ngModel)]="selectedGenres" [multiple]="true">
+                  <mat-option *ngFor="let book of books" [value]="book.genre_id"></mat-option>
+                </mat-select>              
+              </mat-form-field>
+            </th>
+            <th style="border-right: none">
+              <mat-form-field appearance="fill">
+                <mat-label>Число страниц</mat-label>
+                <mat-select multiple [(ngModel)]="selectedPages">
+                  <mat-option *ngFor="let book of books" [value]="book.pages"></mat-option>
+                </mat-select>
+              </mat-form-field>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let book of books; let i = index">
+            <div>
+              <td>{{ book.title }}</td>
+              <td>{{ book.author_id }}</td>
+              <td>{{ book.language }}</td>
+              <td>{{ book.genre_id }}</td>
+              <td>{{ book.pages }}</td>
+              <a (click)="toggleDetails(i)">{{ book.isExpanded ? 'Скрыть' : 'Подробности' }}</a>
+            </div>
+            <div class="book-details">
+              <td colspan="5" *ngIf="expandedBook === book">
+                <h2>Детали книги</h2>
+                <div *ngIf="expandedBook">
+                  <p><strong>Описание: </strong>{{ expandedBook.description }}</p>
+                </div>
+                <div *ngIf="!expandedBook">Книга не найдена или загружается...</div>
+              </td>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
 </div>

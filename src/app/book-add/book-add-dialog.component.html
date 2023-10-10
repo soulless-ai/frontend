@@ -1,0 +1,79 @@
+<div class="book-add-dialog-main">
+  <div class="book-add-dialog-container">
+    <div class="top-bar">
+      <h2>Добавление книги</h2>
+      <button mat-icon-button (click)="closeDialog()">
+        <mat-icon>X</mat-icon>
+      </button>
+    </div>
+    <form class="form">
+
+      <mat-form-field>
+        <label for="bookTitleInput">Название книги</label>
+        <input matInput
+              [(ngModel)]="bookTitle"
+              name="bookTitle"
+              #bookTitleInput>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label for="bookAuthorSelect">Автор</label>
+          <mat-select [(ngModel)]="bookAuthor" name="bookAuthor" #bookAuthorSelect disableOptionCentering>
+            <mat-option *ngFor="let bookAuthorSelect of bookAuthorSelects" [value]="bookAuthorSelect.value">
+              {{bookAuthorSelect.value}}
+              <button mat-icon-button (click)="deleteValue(bookAuthorSelect.value)">
+                <mat-icon></mat-icon>
+              </button>
+            </mat-option>
+            <div>
+              <input matInput [(ngModel)]="customAuthor" name="customAuthor" [placeholder]="newAuthorPlaceholder">
+              <button (click)="addCustomAuthor()">Добавить</button>
+            </div>            
+          </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label for="bookDescriptionInput">Описание</label>
+        <textarea matInput 
+              [(ngModel)]="bookDescription"
+              name="bookDescription"
+              #bookDescriptionInput>
+        </textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label for="bookPagesInput">Число страниц</label>
+        <input matInput
+              type="text"
+              [(ngModel)]="bookPages"
+              name="bookPages"
+              #bookPagesInput
+              pattern="[0-9]*"
+              (input)="onInputPagesChange($event)">
+      </mat-form-field>
+
+      <mat-form-field>
+        <label for="bookLanguageSelect">Язык</label>
+        <mat-form-field>
+          <mat-select [(ngModel)]="bookLanguage" name="bookLanguage">
+            <mat-option *ngFor="let bookLanguageSelect of bookLanguageSelects" [value]="bookLanguageSelect.value">
+              {{bookLanguageSelect.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label for="bookGenreInput">Жанр</label>
+        <input matInput
+              [(ngModel)]="bookGenre"
+              name="bookGenre"
+              #bookGenreInput>
+      </mat-form-field>
+
+      <button mat-button (click)="saveBook()" [ngStyle]="{'background-color': buttonColor, 'color': textColor }">
+        Сохранить
+      </button>
+    </form>
+  </div>
+</div>
