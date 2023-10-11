@@ -12,6 +12,14 @@ interface bookLanguageSelect {
 interface bookGenreSelect {
   value: string;
 }
+interface searchOptionsSelect {
+  query: string;
+  author: string;
+  language: string;
+  genre: string;
+  minPage: string;
+  maxPage: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -20,6 +28,9 @@ interface bookGenreSelect {
 })
 export class AppComponent implements OnInit {
   books: any[] = [];
+
+  searchOptions!: searchOptionsSelect[];
+
   selectedAuthors: any[] = [];
   selectedLanguages: string[] = [];
   selectedPages: string[] = [];
@@ -28,16 +39,16 @@ export class AppComponent implements OnInit {
   expandedBook: any | null = null;
   isEditMode: boolean = false;
 
-  bookAuthor: string[] = [];
+  bookAuthor: any[] = [];
   bookAuthorSelects!: bookAuthorSelect[];
 
-  bookLanguage: string[] = [];
+  bookLanguage: any[] = [];
   bookLanguageSelects!: bookLanguageSelect[];
 
   minPages: number;
   maxPages: number;
 
-  bookGenre: string[] = [];
+  bookGenre: any[] = [];
   bookGenreSelects!: bookGenreSelect[];
 
   constructor(
@@ -64,39 +75,39 @@ export class AppComponent implements OnInit {
     });
   }
 
-  searchBooks(searchQuery: string): void {
-    this.bookService.searchBooks(searchQuery, this.selectedAuthors, this.selectedLanguages, this.bookGenreSelects, this.minPages, this.maxPages).subscribe((data: any[]) => {
+  searchBooks(): void {
+    console.log(this.bookAuthor);
+    const searchOptions: searchOptionsSelect = {
+      query: this.getNonNullValue(this.searchQuery),
+      author: JSON.stringify(
+        this.getNonNullArrayValue(
+          this.bookAuthor.map(author => author.value))),
+      language: JSON.stringify(
+        this.getNonNullArrayValue(
+          this.bookLanguage.map(author => author.value))),
+      genre: JSON.stringify(
+        this.getNonNullArrayValue(this.bookGenre)),
+      minPage: this.getNonNullNumberValue(this.minPages).toString(),
+      maxPage: this.getNonNullNumberValue(this.maxPages).toString(),
+    };
+    this.bookService.searchBooks(searchOptions).subscribe((data: any[]) => {
       this.books = data;
     });
   }
-  onAuthorMultiSelectChange(authors: { value: any[] }) {
-    this.bookService.onAuthorMultiSelectChange(authors).subscribe((data: any[]) => {
-      this.books = data;
-    });
+  
+  getNonNullValue(value: string): string {
+    return value.trim() || "";
   }
-  onLanguageMultiSelectChange(languages: { value: any[] }) {
-    this.bookService.onLanguageMultiSelectChange(languages).subscribe((data: any[]) => {
-      this.books = data;
-    });
+  getNonNullArrayValue(arr: any[]): any[] {
+    return arr || [];
   }
-  applyFilter() {
-    this.onPagesFilterChange();
+  getNonNullNumberValue(value: number | null | undefined): number {
+    return value || 0;
   }
-  onPagesFilterChange(): void {
-    console.log(this.minPages + " + " + this.maxPages);
-    this.bookService.onPagesFilterChange(this.minPages, this.maxPages).subscribe((data: any[]) => {
-      this.books = data;
-    });
-  }
-  onGenreFilterChange(genre: { value: any[] }) {
-    this.bookService.onGenreFilterChange(genre).subscribe((data: any[]) => {
-      this.books = data;
-    });
-  }
-
+  
   clearGenreFilter() {
     this.bookGenre = [];
-    this.getBooks();
+    this.searchBooks();
   }
   
   toggleDetails(index: number) {

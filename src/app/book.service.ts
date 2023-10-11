@@ -2,6 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+interface searchOptionsSelect {
+  query: string;
+  author: string;
+  language: string;
+  genre: string;
+  minPage: string;
+  maxPage: string;
+}
+
 @Injectable ({
   providedIn: 'root'
 })
@@ -23,58 +32,35 @@ export class BookService {
     return this.http.get<any[]>(`${this.baseUrl}/get-genres`);
   }
 
-  // Поиск книги по названию и описанию
-  searchBooks(searchQuery: string, searchAuthors: string[], searchLanguages: string[], searchGenre: string[], searchMinPage: number, searchMaxPage: number): Observable<any[]> {
+  // Поиск
+  searchBooks(searchOptions: searchOptionsSelect): Observable<any[]> {
     let params = new HttpParams();
-    params = params.set('searchQuery', searchQuery);
-    if (searchAuthors.length > 0) {
-        params = params.set('searchAuthors', JSON.stringify(searchAuthors));
+  
+    console.log(searchOptions);
+    if (searchOptions.query) {
+      params = params.set('query', searchOptions.query);
     }
-    if (searchLanguages.length > 0) {
-        params = params.set('searchLanguages', JSON.stringify(searchLanguages));
+    if (searchOptions.author) {
+      params = params.set('author', searchOptions.author);
     }
-    if (searchGenre.length > 0) {
-        params = params.set('searchGenre', JSON.stringify(searchGenre));
+    if (searchOptions.language) {
+      params = params.set('language', searchOptions.language);
     }
-    if (searchMinPage !== undefined && searchMinPage !== null) {
-        params = params.set('searchMinPage', searchMinPage.toString());
+    console.log(searchOptions.language);
+    if (searchOptions.genre) {
+      params = params.set('genre', searchOptions.genre);
     }
-    if (searchMaxPage !== undefined && searchMaxPage !== null) {
-        params = params.set('searchMaxPage', searchMaxPage.toString());
+    if (searchOptions.minPage) {
+      params = params.set('minPage', searchOptions.minPage);
     }
+    if (searchOptions.maxPage) {
+      params = params.set('maxPage', searchOptions.maxPage);
+    }
+  
+    console.log(params);
     return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
   }
   
-  onAuthorMultiSelectChange(authors: { value: any[] }) {
-    const authorsArray = JSON.stringify(authors.value);
-    let params = new HttpParams();
-    params = params.set('searchAuthors', authorsArray);
-    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
-  }
-  onLanguageMultiSelectChange(languages: { value: any[] }) {
-    const languagesString = JSON.stringify(languages.value);
-    let params = new HttpParams();
-    params = params.set('searchLanguages', languagesString);
-    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
-  }
-  onPagesFilterChange(minPage: number, maxPage: number): Observable<any[]> {
-    let params = new HttpParams();
-    if (minPage !== undefined && minPage !== null) {
-        params = params.set('searchMinPage', minPage.toString());
-    }
-    
-    if (maxPage !== undefined && maxPage !== null) {
-        params = params.set('searchMaxPage', maxPage.toString());
-    }
-    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
-  }
-  onGenreFilterChange(genre: { value: any[] }): Observable<any[]> {
-    const genresString = JSON.stringify(genre.value);
-    let params = new HttpParams();
-    params = params.set('searchGenre', genresString);
-    return this.http.get<any[]>(`${this.baseUrl}/get-books`, { params });
-  }
-
   // Создание новой книги
   createBook(bookData: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}`, bookData);
